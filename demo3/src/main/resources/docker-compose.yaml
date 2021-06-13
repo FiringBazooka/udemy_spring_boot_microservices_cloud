@@ -1,0 +1,60 @@
+
+services:
+  currency-exchange:
+    image: firingbazooka/myapp-springboot:exchange.0.0.1-SNAPSHOT
+    ports:
+      - "8000:8000"
+    mem_limit: 700m
+    networks:
+      - microservices-network
+    depends_on: 
+      - Eureka-naming-server
+    environment:
+      EUREKA.CLIENT.SERVICE-URL.DEFAULTZONE: http://Eureka-naming-server:8761/eureka
+      SPRING.ZIPKIN.BASEURL: http://zipkins:9411
+      
+  limits-service:
+    image: firingbazooka/myapp-springboot:demo3.0.0.1-SNAPSHOT
+    ports:
+      - "5000:5000"
+    mem_limit: 700m
+    networks:
+      - microservices-network
+    depends_on: 
+      - Eureka-naming-server
+    environment:
+      EUREKA.CLIENT.SERVICE-URL.DEFAULTZONE: http://Eureka-naming-server:8761/eureka
+      
+  API-Gateway:
+    image: firingbazooka/myapp-springboot:APIGateway.0.0.1-SNAPSHOT
+    ports:
+      - "8765:8765"
+    mem_limit: 700m
+    networks:
+      - microservices-network
+    depends_on: 
+      - Eureka-naming-server
+    environment:
+      EUREKA.CLIENT.SERVICE-URL.DEFAULTZONE: http://Eureka-naming-server:8761/eureka
+
+  Eureka-naming-server:
+    image: firingbazooka/myapp-springboot:Eureka.0.0.1-SNAPSHOT
+    ports:
+    - "8761:8761"
+    mem_limit: 700m
+    networks:
+      - microservices-network
+      
+  zipkins:
+    image: openzipkin/zipkin
+    ports:
+       - "9411:9411"
+    mem_limit: 300m
+    networks:
+      - microservices-network
+     
+      
+
+networks:
+  microservices-network:
+      
